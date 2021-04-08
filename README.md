@@ -1,2 +1,2 @@
 # taurus
-> Tasty Coffee 
+> Tasty Cafe
