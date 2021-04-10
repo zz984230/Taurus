@@ -1,0 +1,11 @@
+[report]
+yirgacheffe_kind_path = "./data/kind/yirgacheffe.csv"
+yirgacheffe_tastes_path = "./data/tastes/yirgacheffe.csv"
+yirgacheffe_score_path = "./data/score/yirgacheffe.csv"
+
+[icon]
+logo_file = "./static/cafe.jpg"
+bg_file = "./static/cafe_bg.jpg"
+
+[kind]
+yirgacheffe = "./static/yirgacheffe/kind.jpg"

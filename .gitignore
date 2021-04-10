@@ -1,0 +1,8 @@
+
+.idea/
+
+configs/__pycache__/
+
+constants/__pycache__/
+
+*.pyc
