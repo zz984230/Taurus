@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-class KindSheet(object):
+class ScoreSheet(object):
     def __init__(self, src_data_file):
         self.__src_path = src_data_file
         self.__df = pd.DataFrame()
@@ -9,6 +9,7 @@ class KindSheet(object):
 
     def __transform(self):
         self.__cols = self.__df.columns
+        self.__df[self.__cols[1:]] = self.__df[self.__cols[1:]].astype('float')
 
     def load(self):
         self.__df = pd.read_csv(self.__src_path, encoding='gbk')

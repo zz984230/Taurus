@@ -1,5 +1,4 @@
 [report]
-yirgacheffe_kind_path = "./data/kind/yirgacheffe.csv"
 yirgacheffe_tastes_path = "./data/tastes/yirgacheffe.csv"
 yirgacheffe_score_path = "./data/score/yirgacheffe.csv"
 

@@ -30,8 +30,12 @@ class Config(object):
         return self.__bg_file
 
     @property
-    def yirgacheffe_kind_data_file(self):
-        return self.__data["report"]["yirgacheffe_kind_path"]
+    def yirgacheffe_tastes_data_file(self):
+        return self.__data["report"]["yirgacheffe_tastes_path"]
+
+    @property
+    def yirgacheffe_score_path(self):
+        return self.__data["report"]["yirgacheffe_score_path"]
 
     @property
     def yirgacheffe_kind_pic_file(self):

@@ -2,20 +2,19 @@ from presenter.dash_app import *
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
-import plotly.express as px
+from constants.constant import *
 from constants.colors import *
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 
 class KindPt(object):
-    def __init__(self, base_layout, kind_pic_file):
-        self.__base_layout = base_layout
+    def __init__(self, kind_pic_file):
         self.__kind_pic_file = kind_pic_file
-        self.__half_left_width_stl = dict(width='50%', height="850px", float='left')
-        self.__half_right_width_stl = dict(width='50%', float='right')
+        self.__half_left_width_stl = {"height": PAGE_HEIGHT, "float": "left", "flex-grow": 0}
+        self.__half_right_width_stl = dict(float='right')
 
-    def __set_layout(self):
+    def set_layout(self):
         card_content = [
             dbc.CardHeader("Cafe Information"),
             dbc.CardBody(
@@ -37,8 +36,8 @@ class KindPt(object):
         return dbc.Row(
             [
                 dbc.Col([
-                    dbc.Card(card_content, color=DARK_GRAY, inverse=True, style={"height": "50%"}),
-                    dcc.Graph(id="kind_radar", style={"height": "50%"})
+                    dbc.Card(card_content, color=WHITE_SMOKE, style={"height": "50%", "width": "500px"}),
+                    dcc.Graph(id="kind_radar", style={"height": "50%", "width": "500px"})
                 ], style=self.__half_left_width_stl),
                 dbc.Col([
                     html.Img(
@@ -48,19 +47,10 @@ class KindPt(object):
                 ], style=self.__half_right_width_stl),
             ],
             no_gutters=True,
-            style={"height": "850px"}
+            style={"height": PAGE_HEIGHT}
         )
 
     def render(self, df):
-        @app.callback(Output("right_layout", "children"),
-                      Input("kind-collapse-0", "active"))
-        def set_balance_layout(active):
-            children = self.__set_layout()
-            if active:
-                return children
-
-            return self.__base_layout.children
-
         @app.callback(Output("kind_radar", "figure"), Input("kind-collapse-0", "active"))
         def kind_radar_chart(active):
             fig = go.Figure(data=go.Scatterpolar(
@@ -77,6 +67,6 @@ class KindPt(object):
                     ),
                 ),
                 showlegend=False,
-                paper_bgcolor=DARK_GRAY
+                paper_bgcolor=WHITE_SMOKE
             )
             return fig

@@ -1,4 +1,3 @@
-from repository.kind_repo import KindSheet
 import pandas as pd
 
 

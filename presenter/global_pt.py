@@ -1,5 +1,6 @@
 from presenter.dash_app import *
 from constants.colors import *
+from constants.constant import *
 from dash.dependencies import Input, Output
 import dash
 import dash_bootstrap_components as dbc
@@ -7,21 +8,24 @@ import dash_html_components as html
 
 
 class GlobalPt(object):
-    def __init__(self, logo_file, bg_file):
+    def __init__(self, logo_file, bg_file, kind_pt, score_pt):
         self.__logo_file = logo_file
         self.__bg_file = bg_file
-        self.__labels = ['咖啡种类', '咖啡品鉴', '咖啡评分']
+        self.__kind_pt = kind_pt
+        self.__score_pt = score_pt
+        self.__labels = ['咖啡品类', '咖啡品鉴', '咖啡评分']
         self.__clicked_button_id = ""
+        self.__button_group = []
 
     def __init_layout(self):
-        self.__left_layout = dbc.Col(id='left_layout', xs=1, style=dict(background=GAINSBORO))
+        self.__left_layout = dbc.Col(id='left_layout', xs=1, style=dict(background=GAINSBORO, height=PAGE_HEIGHT))
         self.__right_layout = dbc.Col(
             html.Img(
                 src=self.__bg_file,
-                style={"position": "absolute", "height": "100%", "width": "100%"}
+                style={"height": "100%", "width": "100%"}
             ),
             id='right_layout',
-            style=dict(background=WHITE_SMOKE),
+            style=dict(background=SILVER, height=PAGE_HEIGHT)
         )
 
     def set_global_layout(self):
@@ -46,7 +50,7 @@ class GlobalPt(object):
                         self.__right_layout,
                     ],
                     no_gutters=True,
-                    style=dict(height="850px")
+                    style=dict(height=PAGE_HEIGHT)
                 )
             ],
         ))
@@ -63,7 +67,7 @@ class GlobalPt(object):
         )
 
     def set_left_layout(self):
-        button_group = [
+        self.__button_group = [
             [
                 dbc.Button("Yirgacheffe", id="kind-collapse-0", block=True),
             ],
@@ -77,7 +81,7 @@ class GlobalPt(object):
 
         self.__left_layout.children = [
             self.__set_each_left_layout(i, dbc.ButtonGroup(
-                button_group[i],
+                self.__button_group[i],
                 vertical=True,
                 style={"width": "inherit"}
             )) for i in range(len(self.__labels))
@@ -91,8 +95,40 @@ class GlobalPt(object):
         return self.__right_layout
 
     def render(self):
-        @app.callback([Output(f"kind-collapse-{i}", "active") for i in range(1)],
-                      [Input(f"kind-collapse-{i}", "n_clicks") for i in range(1)])
+        @app.callback(Output("right_layout", "children"),
+                      [Input("kind-collapse-0", "active"), Input("score-collapse-0", "active")])
+        def set_score_layout(kind_active, score_active):
+            ctx = dash.callback_context
+            if not ctx.triggered:
+                return self.__right_layout.children
+            else:
+                button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+            if kind_active and button_id == "kind-collapse-0":
+                return self.__kind_pt.set_layout()
+            elif score_active and button_id == "score-collapse-0":
+                return self.__score_pt.set_layout()
+
+            return self.__right_layout.children
+
+        @app.callback([Output(f"score-collapse-{i}", "active") for i in range(len(self.__button_group[2]))],
+                      [Input(f"score-collapse-{i}", "n_clicks") for i in range(len(self.__button_group[2]))])
+        def score_button_click(*args):
+            ctx = dash.callback_context
+            if not ctx.triggered:
+                return [False for _ in range(len(args))]
+            else:
+                button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+            index = 0
+            for k, v in enumerate(args):
+                if v and button_id == f"score-collapse-{k}":
+                    index = k
+
+            return [True if index == i else False for i in range(len(args))]
+
+        @app.callback([Output(f"kind-collapse-{i}", "active") for i in range(len(self.__button_group[0]))],
+                      [Input(f"kind-collapse-{i}", "n_clicks") for i in range(len(self.__button_group[0]))])
         def kind_button_click(*args):
             ctx = dash.callback_context
             if not ctx.triggered:
